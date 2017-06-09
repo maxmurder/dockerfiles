@@ -11,7 +11,7 @@ RUN luarocks install loadcaffe
 # install neural style
 WORKDIR /
 RUN set -ex && \
-	wget https://github/jcjohnson/neural-style/archive/master.tar.gz && \
+	wget https://github.com/jcjohnson/neural-style/archive/master.tar.gz && \
 	tar -xzf master.tar.gz && \
 	mv neural-style-master neural-style && \
 	rm master.tar.gz
@@ -22,9 +22,13 @@ RUN bash models/download_models.sh
 RUN mkdir /models
 VOLUME ["/neural-style/models"]
 
-# setup images dir
-VOLUME ["/images"]
+# install scripts
+COPY ["/scripts/neural-style.sh", "/neural-style/"]
 ENV PATH /neural-style:$PATH
+
+# setup mount point
+WORKDIR /images
+VOLUME ["/images"]
 
 # set entry point 
 ENTRYPOINT ["neural-style.sh"]
