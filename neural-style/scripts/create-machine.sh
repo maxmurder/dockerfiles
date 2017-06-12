@@ -1,48 +1,48 @@
 #!/bin/bash
 # Creates aws host machine and installs dependencies.
 
-if [[$# -lt 1]] then 
- echo "Creates aws host machine and install dependencies for neural-style"
+if [[ $# -lt 1 ]] 
+ then 
+ echo "Creates aws host machine and installs dependencies."
  echo "USAGE: create-machine.sh [vpc-id] [machine-name]"
- exit 1   
+ echo "vpc-id: id of VPC for us-west-2 region."
+ exit 1
 fi
 
 MACHINE_NAME="aws-neural-style-01"
-if ![[ -z "$2"]]  then
+if ! [[ -z "$2" ]]
+ then
  MACHINE_NAME="$2"
 fi
 
-# check pems
-if groups $USER | grep &>/dev/null 'bdocker\b'; then SU=""
-else SU="sudo"; 
-fi
-
 # create machine
-$SU docker-machine create --driver amazonec2 \
+docker-machine create --driver amazonec2 \
                       --amazonec2-region us-west-2 \
                       --amazonec2-zone b \
                       --amazonec2-ami ami-efd0428f \
                       --amazonec2-instance-type p2.xlarge \
-                      --amazonec2-vpc-id $2 \
-#                      --amazonec2-access-key  AKI*** \
-#                      --amazonec2-secret-key *** \
+                      --amazonec2-vpc-id $1 \
                       $MACHINE_NAME
-$SU docker-machine restart $MACHINE_NAME
 
-# install deps
-#SU docker-machine ssh $MACHINE_NAME
-mkdir dockerfiles
-curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - -C dockerfiles --strip-components 1
-sh dockerfiles/neural-style/install-instance-deps.sh
-sudo nvidia-docker build -t neural-style dockerfiles/neuralstyle/
-exit
+# restart and wait for initilization
+docker-machine restart $MACHINE_NAME
+if [[ $(docker-machine status $MACHINE_NAME) != "Running" ]]
+ then
+ echo "$MACHINE_NAME did not start aborting."
+ exit 1
+fi 
+sleep 3
 
-$SU docker-machine restart 
+# install deps on instance
+echo "Installing Dependencies" 
+docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - -C ~/ --strip-components 1'
+docker-machine ssh $MACHINE_NAME 'sh neural-style/scripts/install-instance-deps.sh'
+docker-machine ssh $MACHINE_NAME 'nvidia-docker build -t neural-style neural-style/Dockerfile'
+docker-machine restart $MACHINE_NAME 
 
-# set environment
+#set up envinronment
 eval $(docker-machine env $MACHINE_NAME)
 export NV_HOST="ssh://ubuntu@$(docker-machine ip $MACHINE_NAME):"
-ssh-add ~/.docker/machine/machines/$MACHINE_NAME/id_rsa
 
 #test
-$SU nvidia-docker run --rm nvidia/cuda nvidia-smi
+# nvidia-docker run --rm nvidia/cuda nvidia-smi
