@@ -34,15 +34,17 @@ fi
 sleep 3
 
 # install deps on instance
-echo "Installing Dependencies" 
-docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - -C ~/ --strip-components 1'
+echo "Installing Dependencies"
+docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
 docker-machine ssh $MACHINE_NAME 'sh neural-style/scripts/install-instance-deps.sh'
+docker-machine ssh $MACHINE_NAME 'sudo usermod -aG docker $USER'
 docker-machine ssh $MACHINE_NAME 'nvidia-docker build -t neural-style neural-style/Dockerfile'
 docker-machine restart $MACHINE_NAME 
 
 #set up envinronment
 eval $(docker-machine env $MACHINE_NAME)
 export NV_HOST="ssh://ubuntu@$(docker-machine ip $MACHINE_NAME):"
+ssh-add ~/.docker/machines/$MACHINE_NAME/id_rsa
 
 #test
 # nvidia-docker run --rm nvidia/cuda nvidia-smi
