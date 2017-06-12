@@ -35,9 +35,9 @@ sleep 3
 
 # install deps on instance
 echo "Installing Dependencies"
-docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
-docker-machine ssh $MACHINE_NAME 'sh neural-style/scripts/install-instance-deps.sh'
 docker-machine ssh $MACHINE_NAME 'sudo usermod -aG docker $USER'
+docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
+docker-machine ssh $MACHINE_NAME 'chmod +x neural-style/scripts/install-instance-deps.sh && ./neural-style/scripts/install-instance-deps.sh'
 docker-machine ssh $MACHINE_NAME 'nvidia-docker build -t neural-style neural-style/Dockerfile'
 docker-machine restart $MACHINE_NAME 
 
