@@ -31,6 +31,8 @@ Dockerized neural style transfer algorithm [jcjohnson/neural-style](https://gith
 
 * Create host machine. Replace [VPC ID] with your VPC ID.
 	sudo ./scripts/create-machine.sh [VPC ID]
-* SSH into machine
+* SSH into host machine
 	sudo docker-machine ssh aws-neural-style-01
+* On host machine run neural-style docker
+	nvidia-docker run --rm -v $(pwd):/images --content_image content_iamge.jpg --style_image style_image.jpg --output_image neural_output.png
 
