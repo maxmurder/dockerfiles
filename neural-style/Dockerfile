@@ -9,13 +9,10 @@ RUN set -ex && \
 RUN luarocks install loadcaffe
 
 # install neural style
-WORKDIR /
-RUN set -ex && \
-	curl -L https://api.github.com/repos/jcjohnson/neural-style/tarball/master | tar -xzf - && \
-	mv neural-style-master neural-style
+WORKDIR /neural-style
+RUN curl -L https://api.github.com/repos/jcjohnson/neural-style/tarball/master | tar -xzf - --strip-components 1
 
-# install models
-WORKDIR neural-style
+# download models
 RUN bash models/download_models.sh
 RUN mkdir /models
 VOLUME ["/neural-style/models"]
