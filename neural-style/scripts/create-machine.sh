@@ -24,20 +24,19 @@ docker-machine create --driver amazonec2 \
                       --amazonec2-vpc-id $1 \
                       $MACHINE_NAME
 
-# restart and wait for initilization
+# restart and test initilization
 docker-machine restart $MACHINE_NAME
 if [[ $(docker-machine status $MACHINE_NAME) != "Running" ]]
  then
  echo "$MACHINE_NAME did not start aborting."
  exit 1
 fi 
-sleep 3
 
 # install deps on instance
 echo "Installing Dependencies"
 docker-machine ssh $MACHINE_NAME 'sudo usermod -aG docker $USER'
 docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
-docker-machine ssh $MACHINE_NAME 'chmod +x neural-style/scripts/install-instance-deps.sh && ./neural-style/scripts/install-instance-deps.sh'
+docker-machine ssh $MACHINE_NAME 'chmod +x neural-style/scripts/*.sh && ./neural-style/scripts/install-instance-deps.sh'
 docker-machine ssh $MACHINE_NAME 'nvidia-docker build -t neural-style neural-style/'
 docker-machine restart $MACHINE_NAME 
 

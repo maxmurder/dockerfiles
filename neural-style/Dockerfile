@@ -1,4 +1,4 @@
-# https://github.com/albarji/neural-style-docker
+# Ubuntu Core 14.04 + CUDA + Torch 7 | https://hub.docker.com/r/kaixhin/cuda-torch/
 FROM kaixhin/cuda-torch
 
 # setup environment
@@ -25,5 +25,5 @@ WORKDIR /images
 VOLUME ["/images"]
 
 # set entry point 
-ENTRYPOINT ["sh", "-c", "neural-style.sh"]
+ENTRYPOINT ["sh", "-l", "-c", "neural-style.sh"]
 CMD ["-backend", "cudnn", "-cudnn_autotune"]
