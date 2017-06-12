@@ -4,17 +4,15 @@ FROM kaixhin/cuda-torch
 # setup environment
 RUN set -ex && \
 	apt-get update && \
-	apt-get install --no-install-recommends --no-install-suggests -y libprotobuf-dev protobuf-compiler wget && \
+	apt-get install --no-install-recommends --no-install-suggests -y libprotobuf-dev protobuf-compiler curl && \
 	rm -rf /var/lib/apt/lists/* 
 RUN luarocks install loadcaffe
 
 # install neural style
 WORKDIR /
 RUN set -ex && \
-	wget https://github.com/jcjohnson/neural-style/archive/master.tar.gz && \
-	tar -xzf master.tar.gz && \
-	mv neural-style-master neural-style && \
-	rm master.tar.gz
+	curl -L https://api.github.com/repos/jcjohnson/neural-style/tarball/master | tar -xzf - && \
+	mv neural-style-master neural-style
 
 # install models
 WORKDIR neural-style
@@ -31,5 +29,5 @@ WORKDIR /images
 VOLUME ["/images"]
 
 # set entry point 
-ENTRYPOINT ["neural-style.sh"]
+ENTRYPOINT ["sh", "-c", "neural-style.sh"]
 CMD ["-backend", "cudnn", "-cudnn_autotune"]
