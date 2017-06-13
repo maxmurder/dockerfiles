@@ -25,5 +25,5 @@ WORKDIR /images
 VOLUME ["/images"]
 
 # set entry point 
-ENTRYPOINT ["/neural_style/neural-style.sh"]
+ENTRYPOINT ["neural-style.sh"]
 CMD ["-backend", "cudnn", "-cudnn_autotune"]
