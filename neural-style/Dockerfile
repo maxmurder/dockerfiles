@@ -1,5 +1,5 @@
 # Ubuntu Core 14.04 + CUDA + Torch 7 | https://hub.docker.com/r/kaixhin/cuda-torch/
-FROM kaixhin/cuda-torch
+FROM kaixhin/cuda-torch:8.0
 
 # setup environment
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub
