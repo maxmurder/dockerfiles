@@ -26,7 +26,8 @@ while getopts "h?:c:s:o:i:r:n:" opt; do
         ;;
         n) NUM=$OPTARG
         ;;
-        
+        *) useage
+        ;;
     esac
 done
 
@@ -44,5 +45,5 @@ do
                 -image_size $RES \
                 -content_image $CONTENT \
                 -style_image $FILE \
-                -output_image $OUTPUT      
+                -output_image $OFILE
 done

@@ -32,8 +32,11 @@ while getopts ":hm:c:s:o:r:" opt; do
     esac
 done
 
+FILENAME=$(basename "$CONTENT")
+
 docker-machine start $MACHINENAME
 docker-machine scp -r $CONTENT $MACHINENAME:images/content/
 docker-machine scp -r $STYLE $MACHINENAME:images/style/
-#docker-machine ssh $MACHINENAME 
+docker-machine ssh $MACHINENAME neural-style/scripts/batch-run.sh images/content/$FILENAME -r $RESOLUTION
+docker-machine scp -r $MACHINENAME:images/output/ $OUTPUT
 docker-machine stop $MACHINENAME
