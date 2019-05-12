@@ -19,8 +19,9 @@ fi
 docker-machine create --driver amazonec2 \
                       --amazonec2-region us-west-2 \
                       --amazonec2-zone b \
-                      --amazonec2-ami ami-efd0428f \
+                      --amazonec2-ami ami-01a4e5be5f289dd12 \
                       --amazonec2-instance-type p2.xlarge \
+                      --amazonec2-root-size 100 \
                       --amazonec2-vpc-id $1 \
                       $MACHINE_NAME
 
@@ -37,7 +38,7 @@ echo "Installing Dependencies"
 docker-machine ssh $MACHINE_NAME 'sudo usermod -aG docker $USER'
 docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
 docker-machine ssh $MACHINE_NAME 'chmod +x neural-style/scripts/*.sh && ./neural-style/scripts/install-instance-deps.sh'
-docker-machine ssh $MACHINE_NAME 'sudo nvidia-docker build -t neural-style neural-style/'
+docker-machine ssh $MACHINE_NAME 'sudo docker build --runtime=nvidia -t neural-style neural-style/'
 docker-machine ssh $MACHINE_NAME 'mkdir -p images/content images/styles images/output'
 docker-machine restart $MACHINE_NAME 
 
@@ -45,6 +46,3 @@ docker-machine restart $MACHINE_NAME
 eval $(docker-machine env $MACHINE_NAME)
 export NV_HOST="ssh://ubuntu@$(docker-machine ip $MACHINE_NAME):"
 ssh-add ~/.docker/machines/$MACHINE_NAME/id_rsa
-
-#test
-# nvidia-docker run --rm nvidia/cuda nvidia-smi

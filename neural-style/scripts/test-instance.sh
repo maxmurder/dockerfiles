@@ -8,4 +8,4 @@ cd ~/images/styles/
 wget https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Hs-2009-25-e-full_jpg.jpg/800px-Hs-2009-25-e-full_jpg.jpg
 
 cd ~
-nvidia-docker run --rm -v $(pwd):/images neural-style -content_image images/content/134px-Buzz_Aldrin_Apollo_Spacesuit.jpg -style_image images/styles/800px-Hs-2009-25-e-full_jpg.jpg -output_image images/output/Test.png -num_iterations 1 
+docker run --runtime=nvidia --rm -v $(pwd):/images neural-style -content_image images/content/134px-Buzz_Aldrin_Apollo_Spacesuit.jpg -style_image images/styles/800px-Hs-2009-25-e-full_jpg.jpg -output_image images/output/Test.png -num_iterations 1 
