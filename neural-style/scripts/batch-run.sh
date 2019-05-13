@@ -3,7 +3,7 @@ CONTENT="${@: -1}"
 SWEIGHT='1000'
 CWEIGHT='100'
 STYLEDIR='images/styles/*'
-OUTPUT='images/output/'
+OUTDIR='images/output/'
 RES='512'
 NUM='1000'
 
@@ -17,7 +17,7 @@ while getopts "h?:c:s:o:i:r:n:" opt; do
         ;;
         s) SWEIGHT=$OPTARG
         ;;
-        o) OUTPUT=$OPTARG
+        o) OUTDIR=$OPTARG
         ;;
         i) STYLEDIR=$OPTARG
         ;;
