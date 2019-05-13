@@ -38,7 +38,7 @@ echo "Installing Dependencies"
 docker-machine ssh $MACHINE_NAME 'sudo usermod -aG docker $USER'
 docker-machine ssh $MACHINE_NAME 'curl -L https://api.github.com/repos/maxmurder/dockerfiles/tarball/master | tar -xzf - --strip-components 1'
 docker-machine ssh $MACHINE_NAME 'chmod +x neural-style/scripts/*.sh && ./neural-style/scripts/install-instance-deps.sh'
-docker-machine ssh $MACHINE_NAME 'sudo docker build --runtime=nvidia -t neural-style neural-style/'
+docker-machine ssh $MACHINE_NAME 'docker build -t neural-style neural-style/'
 docker-machine ssh $MACHINE_NAME 'mkdir -p images/content images/styles images/output'
 docker-machine restart $MACHINE_NAME 
 
