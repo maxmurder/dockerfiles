@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-
-CONTENT=$1
-SWEIGHT="1000"
-CWEIGHT="100"
-STYLEDIR="images/styles/*"
-OUTPUT="images/output/"
-RES="512"
-NUM="1000"
+CONTENT="${@: -1}"
+SWEIGHT='1000'
+CWEIGHT='100'
+STYLEDIR='images/styles/*'
+OUTPUT='images/output/'
+RES='512'
+NUM='1000'
 
 useage() { printf "Useage: $0 <content image> [opts]\n[-i <style images>]\n[-o <output dir>]\n[-c <content weight>]\n[-s <style weight>]\n[-r <output resolution>]\n[-n number of iterations]\n" 1>&2; exit 0;}
 
@@ -26,16 +25,16 @@ while getopts "h?:c:s:o:i:r:n:" opt; do
         ;;
         n) NUM=$OPTARG
         ;;
-        *) useage
-        ;;
     esac
 done
 
+echo $STYLEDIR
+
 for FILE in $STYLEDIR
 do
-    FILENAME=$(basename "$FILE")
-    echo "Style: $FILENAME"
-    OFILE="$OUTDIR/${FILENAME%.*}_output.png"
+    BASENAME=$(basename $FILE)
+    OFILE="$OUTDIR/${BASENAME%.*}_output.png"
+    printf '%s\n' "$CONTENT $BASENAME $OFILE"
     docker run --runtime=nvidia --rm -v $(pwd):/images neural-style \
                 -save_iter 0 \
                 -normalize_gradients \
